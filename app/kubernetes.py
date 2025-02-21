@@ -1,10 +1,17 @@
 from kubernetes import client, config
 import subprocess
+from prometheus_client import Counter
 
 # Load Kubernetes config
 config.load_kube_config()
 
+# Custom metric: Number of code injections
+CODE_INJECTIONS = Counter("code_injections_total", "Total number of code injections")
+
 def inject_code_into_pod(user_id: str, repo_path: str):
+    # Increment the counter
+    CODE_INJECTIONS.inc()
+
     pod_name = f"{user_id}-test-pod"
     namespace = user_id
 
